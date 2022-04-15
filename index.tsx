@@ -134,14 +134,14 @@ const VStack = (props: VStackProp) => {
         marginProp
     } = useCommonLayoutProps(justify, alignment, fill, flex, width, height, padding, margin);
 
-    console.log({
-        ...fillProp,
-        ...flexProp,
-        ...sizeProp,
-        ...paddingProp,
-        ...marginProp,
-        backgroundColor: background
-    })
+    // console.log({
+    //     ...fillProp,
+    //     ...flexProp,
+    //     ...sizeProp,
+    //     ...paddingProp,
+    //     ...marginProp,
+    //     backgroundColor: background
+    // })
 
     return (
         <View style={{

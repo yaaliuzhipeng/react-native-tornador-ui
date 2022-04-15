@@ -2,7 +2,7 @@
   "name": "@tornador/ui",
   "version": "1.0.0",
   "description": "amazing ui library",
-  "main": "index.ts",
+  "main": "index.tsx",
   "files": [
     "README.md",
     "index.tsx",

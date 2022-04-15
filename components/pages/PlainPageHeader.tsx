@@ -1,5 +1,5 @@
 import React from 'react';
-import HeaderBase from './HeaderBase';
+import BaseContainer from './BaseContainer';
 import HeaderPlainBackdrop, { HeaderPlainBackdropProps } from './HeaderPlainBackdrop';
 import HeaderPlainContent, { HeaderPlainContentProps } from './HeaderPlainContent';
 
@@ -12,7 +12,8 @@ const PlainPageHeader = (props: {
 }) => {
     const { zIndex = 999, height = PlainPageHeaderHeight, backdropConfigs = {}, contentConfigs = {} } = props;
     return (
-        <HeaderBase
+        <BaseContainer
+            position='top'
             zIndex={zIndex}
             height={height}
             renderBackdropComponent={(props) => <HeaderPlainBackdrop

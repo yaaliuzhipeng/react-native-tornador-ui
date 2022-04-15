@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { Platform, View, ViewStyle } from 'react-native';
-import { BaseHeaderInjectedProps } from './HeaderBase';
+import { BaseContainerInjectedProps } from './BaseContainer';
 
 export type HeaderPlainBackdropProps = {
     backgroundColor?: string;
     shadow?: Tornador.ShadowOpts;
     enableShadow?: boolean;
 }
-type HeaderPlainBackdropComposeProps = BaseHeaderInjectedProps & HeaderPlainBackdropProps
+type HeaderPlainBackdropComposeProps = BaseContainerInjectedProps & HeaderPlainBackdropProps
 
 const DEF_SHADOW = {
     shadowColor: '#000000',

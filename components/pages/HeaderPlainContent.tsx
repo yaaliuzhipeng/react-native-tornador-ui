@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Pressable, View, Text, StyleSheet, TextStyle } from 'react-native';
 import SvgIcon from '../svg/SvgIcon';
-import { BaseHeaderInjectedProps } from './HeaderBase';
+import { BaseContainerInjectedProps } from './BaseContainer';
 
 const ICON_LEFT = [
     'M299.52 521.728c-3.2768-13.9264 0.512-29.184 11.3664-40.0384l341.9136-341.9136c16.6912-16.6912 43.7248-16.6912 60.3136 0s16.6912 43.7248 0 60.3136L401.3056 512l311.9104 311.9104c16.6912 16.6912 16.6912 43.7248 0 60.3136s-43.7248 16.6912-60.3136 0l-342.016-341.9136c-5.632-5.632-9.6256-12.8-11.3664-20.5824z'
@@ -17,10 +17,13 @@ export type HeaderPlainContentProps = {
     widthScales?: [string, string, string]; //三个组件宽度占比: '25%','50%','25%'
 }
 
-type HeaderPlainContentComposeProps = HeaderPlainContentProps & BaseHeaderInjectedProps;
+type HeaderPlainContentComposeProps = HeaderPlainContentProps & BaseContainerInjectedProps;
 
 const HeaderPlainContent = (props: HeaderPlainContentComposeProps) => {
     const {
+        size,
+        abs,
+        zIndex,
         insets,
         title = '',
         titleStyle = {},
@@ -38,9 +41,9 @@ const HeaderPlainContent = (props: HeaderPlainContentComposeProps) => {
         ...titleStyle
     }), [])
     return (
-        <View style={[styles.row_c, {
-            flex: 1,
-            marginTop: insets.top
+        <View style={[styles.row_c, size, abs, {
+            zIndex,
+            paddingTop: insets.top
         }]}>
             <View style={[styles.row_c, { width: widthScales[0], height: '100%' }]}>
                 {(!isNil(HeaderLeftComponent)) ? HeaderRightComponent : (

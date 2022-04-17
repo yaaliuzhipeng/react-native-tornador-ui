@@ -5,7 +5,6 @@ import { PanGestureHandler, PanGestureHandlerEventPayload, GestureEvent, Handler
 
 const UUID = () => Date.now().toString();
 
-
 export function makeSwipeableItem(WrapperedComponent, config: { key: string, width: number }) {
     return function (props) {
         const { width, key } = config;
@@ -34,7 +33,7 @@ export function makeSwipeableItem(WrapperedComponent, config: { key: string, wid
 }
 
 const Swipeable = React.memo((props: {
-    nodeRef?: MutableRefObject<any>;
+    controller?: MutableRefObject<any>;
     RightUnderneathWidth: number;
     RightUnderneathComponents: any[];
     onUnderneathComponentPressed?: (key: string) => void;
@@ -42,7 +41,7 @@ const Swipeable = React.memo((props: {
     containerStyles?: ViewStyle[];
 }) => {
     const { children, containerStyles = [], RightUnderneathComponents = [], onUnderneathComponentPressed, RightUnderneathWidth } = props;
-    const nodeRef = props.nodeRef ?? useRef();
+    const controller = props.controller ?? useRef();
     const uuid = useRef(UUID()).current;
     const offsetX = useSharedValue(0);
     const savedOffsetX = useSharedValue(0);
@@ -67,7 +66,7 @@ const Swipeable = React.memo((props: {
         DeviceEventEmitter.emit('SWIPEABLE_CLOSE_OTHERS', uuid)
     }
     useEffect(() => {
-        nodeRef.current = {
+        controller.current = {
             close
         }
         const sub = DeviceEventEmitter.addListener('SWIPEABLE_CLOSE_OTHERS', (data) => {

@@ -18,18 +18,18 @@ const BaseContainer = (props: {
     renderBackdropComponent: (props: any) => any;
 }) => {
 
-    const { 
+    const {
         position,
-        height = 50, 
-        zIndex = 99, 
-        renderContentComponent, 
+        height = 50,
+        zIndex = 99,
+        renderContentComponent,
         renderBackdropComponent,
     } = props;
     const insets = useSafeAreaInsets();
     const dms = useWindowDimensions();
-    const size = useMemo(() => ({ 
-        height: (position == 'top' ? insets.top : insets.bottom) + height, 
-        width: dms.width 
+    const size = useMemo(() => ({
+        height: (position == 'top' ? insets.top : insets.bottom) + height,
+        width: dms.width
     }), [insets, dms]);
     const abs = useMemo(() => {
         let _abs = {
@@ -37,9 +37,9 @@ const BaseContainer = (props: {
             left: 0,
             right: 0
         }
-        return (position == 'top' ? Object.assign(_abs,{top:0}) : Object.assign(_abs,{bottom:0}))
-    },[])
-    const injectedProps = useMemo(() => ({ size, insets, height, dms, abs, zIndex }), [size])
+        return (position == 'top' ? Object.assign(_abs, { top: 0 }) : Object.assign(_abs, { bottom: 0 }))
+    }, [])
+    const injectedProps = useMemo(() => ({ size, insets, height, dms, abs, zIndex }), [size, insets, dms, zIndex,height])
 
     return (
         <>

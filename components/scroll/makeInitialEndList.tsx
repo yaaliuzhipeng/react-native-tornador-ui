@@ -12,7 +12,6 @@ interface Props extends Omit<FlatListProps<any>, 'onContentSizeChange' | 'style'
 function makeInitialEndList(WrapperedComponent) {
     return React.forwardRef((props: Props, ref: any) => {
         const { size,onContentSizeChange } = props;
-        const injectedProps = useRestProps(props, ['size', 'style','onContentSizeChange']);
         const list: MutableRefObject<any> = ref ?? useRef();
         const initialContentSizeChangedCount = useRef(-1);
         useLayoutEffect(() => {
@@ -21,7 +20,7 @@ function makeInitialEndList(WrapperedComponent) {
                 let now = initialContentSizeChangedCount.current;
                 if (now === -1) return;
                 if (pre === now || now > max) {
-                    console.log('content size not changed any more or reached the max count ,set it to visible');
+                    console.log(`【makeInitialEndList】${now > max ? 'change reached max deepth':'content size not changed'}`);
                     initialContentSizeChangedCount.current = -2;
                     requestAnimationFrame(() => {
                         if (list.current) list.current.setNativeProps({ opacity: 1.0 });
@@ -32,19 +31,19 @@ function makeInitialEndList(WrapperedComponent) {
             }, 50)
             return () => inter && clearInterval(inter);
         }, [])
-        const _onContentSizeChange = (w: number, h: number) => {
+        const _onContentSizeChange = React.useCallback((w: number, h: number) => {
             if (initialContentSizeChangedCount.current != -2) {
                 initialContentSizeChangedCount.current += 1;
                 if (list.current) list.current.scrollToEnd({ animated: false });
             }
             if(onContentSizeChange) onContentSizeChange(w,h);
-        }
+        },[])
         return (
             <WrapperedComponent
                 ref={list}
+                {...props}
                 onContentSizeChange={_onContentSizeChange}
                 style={[{ opacity: 0.0, ...size },...(props.style ?? [])]}
-                {...injectedProps}
             />
         )
     })

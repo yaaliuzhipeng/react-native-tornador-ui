@@ -57,6 +57,32 @@ const ScaleUpBottomRight = (values) => {
         animations,
     };
 };
+const ScaleInDownTopRight = (values) => {
+    'worklet';
+    const initialValues = {
+        // originY: values.targetOriginY,
+        originX: values.targetOriginX + values.targetWidth / 2,
+        transform: [{ scale: 0.25 }]
+    }
+    const animations = {
+        // originY: withSpring(values.targetOriginY , { mass: 0.8 }),
+        originX: withSpring(values.targetOriginX, { mass: 0.7 }),
+        transform: [{ scale: withTiming(1, { duration: 300 }) }]
+    }
+    return { initialValues, animations }
+}
+const ScaleOutDownTopRight = (values) => {
+    'worklet';
+    const initialValues = {
+        originY: values.currentOriginY,
+        transform: [{ scale: 1.0 }]
+    }
+    const animations = {
+        originY: withSpring(values.currentOriginY - values.targetHeight / 2, { mass: 0.8 }),
+        transform: [{ scale: withTiming(0.0, { duration: 300 }) }]
+    }
+    return { initialValues, animations }
+}
 const ScaleDownBottomRight = (values) => {
     'worklet';
     const animations = {
@@ -109,4 +135,13 @@ const ScaleDownBottomLeft = (values) => {
     };
 };
 
-export { ScaleUpBottomCenter, ScaleUpBottomRight, ScaleUpBottomLeft, ScaleDownBottomCenter, ScaleDownBottomLeft, ScaleDownBottomRight }
+export {
+    ScaleUpBottomCenter,
+    ScaleUpBottomRight,
+    ScaleUpBottomLeft,
+    ScaleDownBottomCenter,
+    ScaleDownBottomLeft,
+    ScaleDownBottomRight,
+    ScaleInDownTopRight,
+    ScaleOutDownTopRight
+}

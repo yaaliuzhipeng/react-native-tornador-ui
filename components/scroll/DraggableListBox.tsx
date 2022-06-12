@@ -1,7 +1,7 @@
 import React, { MutableRefObject, useEffect, useMemo, useRef } from 'react';
 import { StyleSheet, View, FlatListProps, ScrollViewProps, ViewStyle } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
-import Animated, { useAnimatedStyle, useSharedValue, withTiming, runOnJS, useAnimatedScrollHandler, cancelAnimation } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming, runOnJS, useAnimatedScrollHandler, cancelAnimation, withSpring } from 'react-native-reanimated';
 function nothing() { return; }
 type ScrollableComponent = React.ReactElement<Animated.AnimateProps<FlatListProps<unknown>>, any> | React.ReactElement<Animated.AnimateProps<ScrollViewProps>, any>;
 type VRef = MutableRefObject<{
@@ -17,6 +17,7 @@ const DraggableListBox = (props: {
     boxHeight: number;
     containerStyles?: ViewStyle[];
     boxStyles?: ViewStyle[];
+    boxContainerStyles?: ViewStyle[];
     onClosed?: () => void;
     configs?: {
         collapseThreshold?: number;
@@ -25,7 +26,7 @@ const DraggableListBox = (props: {
     }
 }) => {
 
-    const { HeaderComponent, FooterComponent, renderScrollable, boxHeight = 0, containerStyles = [], boxStyles = [], onClosed = nothing, configs = {}, enableShowOnMounted = false } = props;
+    const { HeaderComponent, FooterComponent, renderScrollable, boxHeight = 0, containerStyles = [], boxStyles = [], boxContainerStyles = [], onClosed = nothing, configs = {}, enableShowOnMounted = false } = props;
 
     const collapseThreshold = boxHeight * 0.5;
     const collapseDuration = configs?.collapseDuration ?? 150;
@@ -48,11 +49,11 @@ const DraggableListBox = (props: {
             ]
         }
     })
-    const runAnimation = (close:boolean) => {
+    const runAnimation = (close: boolean) => {
         'worklet';
         panOffset.value = withTiming(close ? boxHeight : 0, { duration: close ? collapseDuration : backDuration }, (finished) => {
             //time to hide
-            if(close) runOnJS(onClosed)();
+            if (close) runOnJS(onClosed)();
         })
     }
     const close = () => {
@@ -62,7 +63,7 @@ const DraggableListBox = (props: {
         })
     }
     const show = () => {
-        transY.value = withTiming(0)
+        transY.value = withSpring(0, { mass: 0.5, damping: 16, stiffness: 180 })
     }
     useEffect(() => {
         if (props.vref) {
@@ -81,7 +82,7 @@ const DraggableListBox = (props: {
             scrollOffset.value = event.contentOffset.y;
         }
     })
-    const touchStartXY = useSharedValue({x:0,y:0})
+    const touchStartXY = useSharedValue({ x: 0, y: 0 })
     const listGesture = Gesture.Native()
         .simultaneousWithExternalGesture(panGestureRef)
         .withRef(listGestureRef);
@@ -90,12 +91,12 @@ const DraggableListBox = (props: {
         .minPointers(1)
         .onTouchesDown(event => {
             cancelAnimation(transY)
-            touchStartXY.value = {x: event.allTouches[0].x,y: event.allTouches[0].y}
+            touchStartXY.value = { x: event.allTouches[0].x, y: event.allTouches[0].y }
         })
-        .onTouchesMove((event,stateManager) => {
+        .onTouchesMove((event, stateManager) => {
             let dx = event.allTouches[0].x - touchStartXY.value.x;
             let dy = event.allTouches[0].y - touchStartXY.value.y;
-            if(Math.abs(dy) > 3 && Math.abs(dx) < 3 && scrollOffset.value < 1 && dy > 0) {
+            if (Math.abs(dy) > 3 && Math.abs(dx) < 3 && scrollOffset.value < 1 && dy > 0) {
                 stateManager.activate();
             }
         })
@@ -123,13 +124,13 @@ const DraggableListBox = (props: {
         <GestureHandlerRootView style={[styles.container, ...containerStyles]}>
             <GestureDetector gesture={panGesture}>
                 <Animated.View style={[{ height: boxHeight }, styles.box, ...boxStyles, animatedStyle]}>
-                    {React.cloneElement(HeaderComponent, { close })}
-                    <View style={{ flex: 1 }}>
+                    {HeaderComponent && React.cloneElement(HeaderComponent, { close })}
+                    <View style={[{ flex: 1 }, ...boxContainerStyles]}>
                         <GestureDetector gesture={listGesture}>
                             {renderScrollable(scrollableProps)}
                         </GestureDetector>
                     </View>
-                    {React.cloneElement(FooterComponent, { close })}
+                    {FooterComponent && React.cloneElement(FooterComponent, { close })}
                 </Animated.View>
             </GestureDetector>
         </GestureHandlerRootView>
